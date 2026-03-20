@@ -1,15 +1,82 @@
+# ============= IDE相关 =============
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# ============= Gradle构建系统 =============
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+local.properties
+
+# ============= Android特定 =============
 /captures
+/app/build/
 .externalNativeBuild
 .cxx
-local.properties
+lint.xml
+lint-baseline.xml
+
+# ============= 操作系统 =============
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+
+# ============= Java/Kotlin编译产物 =============
+*.class
+*.jar
+*.war
+*.aar
+*.jmod
+*.dex
+*.apk
+*.ap_
+*.aab
+*.ap_
+*.btm.xml
+*.production.xml
+
+# ============= 其他构建工具 =============
+target/
+out/
+*.o
+*.so
+*.dylib
+build-log.txt
+
+# ============= Kotlin相关 =============
+*.kt.bak
+*.ktx.bak
+
+# ============= Maven覆盖范围 =============
+!/gradle/wrapper/gradle-wrapper.jar
+
+# ============= 开发工具 =============
+*.log
+crashes/
+bug_report.log
+*.trace
+*.prof
+*.hprof
+
+# ============= 本地开发配置 =============
+proguard/
+signing.properties
+keystore.properties
+app/release/
