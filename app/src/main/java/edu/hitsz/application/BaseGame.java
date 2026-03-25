@@ -71,7 +71,9 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
 
     private static final int TIME_INTERVAL = 40;
     private static final int CYCLE_DURATION = 600;
-    private static final float AIRCRAFT_RENDER_SCALE = 0.5f;
+    private static final float AIRCRAFT_RENDER_SCALE = 0.3f;
+    private static final float BULLET_RENDER_SCALE = 0.45f;
+    private static final float PROP_RENDER_SCALE = 0.35f;
 
     public BaseGame(Context context) {
         super(context);
@@ -440,7 +442,14 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
 
         float objectWidth = object.getWidth();
         float objectHeight = object.getHeight();
-        float typeScale = object instanceof AbstractAircraft ? AIRCRAFT_RENDER_SCALE : 1f;
+        float typeScale = 1f;
+        if (object instanceof AbstractAircraft) {
+            typeScale = AIRCRAFT_RENDER_SCALE;
+        } else if (object instanceof BaseBullet) {
+            typeScale = BULLET_RENDER_SCALE;
+        } else if (object instanceof AbstractProp) {
+            typeScale = PROP_RENDER_SCALE;
+        }
         float renderWidth = objectWidth * typeScale;
         float renderHeight = objectHeight * typeScale;
 

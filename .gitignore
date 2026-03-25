@@ -19,6 +19,7 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 local.properties
+gradle.properties
 
 # ============= Android特定 =============
 /captures
@@ -80,3 +81,17 @@ proguard/
 signing.properties
 keystore.properties
 app/release/
+
+# ============= 本地临时文件 =============
+gradle_fail.log
+compact_log.txt
+
+# ============= build/gradlew 全部忽略 =============
+**/build/
+build.gradle
+build.gradle.kts
+**/build.gradle
+**/build.gradle.kts
+gradlew
+gradlew.bat
+gradle/wrapper/
