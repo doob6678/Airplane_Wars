@@ -27,4 +27,29 @@ public class EasyGame extends BaseGame {
     protected Bitmap resolveBackgroundBitmap() {
         return ImageManager.BACKGROUND_IMAGE_EASY;
     }
+
+    @Override
+    protected int resolveEnemyMaxNumber() {
+        return 5;
+    }
+
+    @Override
+    protected int resolveBossScoreThreshold() {
+        return 900;
+    }
+
+    @Override
+    protected int resolveHeroShootCycle() {
+        return 180;
+    }
+
+    @Override
+    protected double resolveEliteProbability() {
+        return 0.20;
+    }
+
+    @Override
+    protected double resolveElitePlusProbability() {
+        return 0.05;
+    }
 }

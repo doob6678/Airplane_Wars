@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECECEC"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="20dp"
+        android:text="选择游戏难度"
+        android:textColor="#222222"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/switch_music"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:checked="true"
+        android:text="开启音乐"
+        android:textColor="#222222"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_easy"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/btn_default"
+        android:text="简单模式"
+        android:textColor="#111111"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_normal"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/btn_default"
+        android:text="普通模式"
+        android:textColor="#111111"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_hard"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:background="@android:drawable/btn_default"
+        android:text="困难模式"
+        android:textColor="#111111"
+        android:textSize="24sp" />
+
+</LinearLayout>
