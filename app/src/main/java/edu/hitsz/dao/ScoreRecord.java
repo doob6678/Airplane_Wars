@@ -11,14 +11,24 @@ import java.util.Date;
 public class ScoreRecord implements Serializable, Comparable<ScoreRecord> {
     private static final long serialVersionUID = 1L; // 序列化版本号
 
+    private final long id;
     private final String playerName;
     private final int score;
     private final Date recordTime;
 
     public ScoreRecord(String playerName, int score) {
+        this(0L, playerName, score, new Date());
+    }
+
+    public ScoreRecord(long id, String playerName, int score, Date recordTime) {
+        this.id = id;
         this.playerName = playerName;
         this.score = score;
-        this.recordTime = new Date();
+        this.recordTime = recordTime;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getPlayerName() {
@@ -32,6 +42,10 @@ public class ScoreRecord implements Serializable, Comparable<ScoreRecord> {
     public String getFormattedTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(recordTime);
+    }
+
+    public long getRecordTimeMillis() {
+        return recordTime.getTime();
     }
 
     /**

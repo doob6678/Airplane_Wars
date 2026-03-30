@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AircraftWar</string>
+    <string name="leaderboard_title">排行榜</string>
+    <string name="leaderboard_clear_all">清空排行榜</string>
 </resources>

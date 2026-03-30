@@ -26,4 +26,16 @@ public interface ScoreDao {
      * @param scores 得分记录列表
      */
     void saveAll(List<ScoreRecord> scores);
+
+    /**
+     * 按记录 id 删除一条得分记录。
+     *
+     * @param id 记录主键
+     */
+    void deleteScore(long id);
+
+    /**
+     * 清空全部得分记录。
+     */
+    void deleteAll();
 }

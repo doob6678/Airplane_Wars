@@ -40,6 +40,10 @@ import edu.hitsz.prop.BombProp;
  */
 public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
+    public interface GameEventListener {
+        void onGameOver(int score);
+    }
+
     private final SurfaceHolder surfaceHolder;
     private final Paint paint;
 
@@ -74,6 +78,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
     private GameAudioManager audioManager;
     private boolean bossBgmActive = false;
     private boolean gameOverHandled = false;
+    private GameEventListener gameEventListener;
 
     private static final int TIME_INTERVAL = 40;
     private static final int CYCLE_DURATION = 600;
@@ -107,6 +112,10 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         setFocusable(true);
         setFocusableInTouchMode(true);
         initTouchControl();
+    }
+
+    public void setGameEventListener(@Nullable GameEventListener gameEventListener) {
+        this.gameEventListener = gameEventListener;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -429,6 +438,10 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         if (audioManager != null) {
             audioManager.stopAllBgm();
             audioManager.playGameOver();
+        }
+        GameEventListener listener = gameEventListener;
+        if (listener != null) {
+            listener.onGameOver(score);
         }
     }
 

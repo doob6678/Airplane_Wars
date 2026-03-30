@@ -53,6 +53,18 @@ public class FileScoreDaoImpl implements ScoreDao {
         }
     }
 
+    @Override
+    public void deleteScore(long id) {
+        List<ScoreRecord> scores = getAllScores();
+        scores.removeIf(item -> item.getId() == id);
+        saveAll(scores);
+    }
+
+    @Override
+    public void deleteAll() {
+        saveAll(new ArrayList<>());
+    }
+
     private void saveScores(List<ScoreRecord> scores) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
             oos.writeObject(scores);
