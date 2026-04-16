@@ -79,6 +79,22 @@ public abstract class AbstractFlyingObject {
     }
 
     /**
+     * 对象渲染缩放比例。
+     * 默认 1，子类可覆盖以匹配实际绘制尺寸。
+     */
+    public float getRenderScale() {
+        return 1f;
+    }
+
+    private int getCollisionWidth() {
+        return Math.max(1, Math.round(getWidth() * getRenderScale()));
+    }
+
+    private int getCollisionHeight() {
+        return Math.max(1, Math.round(getHeight() * getRenderScale()));
+    }
+
+    /**
      * 碰撞检测，当对方坐标进入我方范围，判定我方击中<br>
      * 对方与我方覆盖区域有交叉即判定撞击。
      * <br>
@@ -101,13 +117,15 @@ public abstract class AbstractFlyingObject {
         // 对方坐标、宽度、高度
         int x = flyingObject.getLocationX();
         int y = flyingObject.getLocationY();
-        int fWidth = flyingObject.getWidth();
-        int fHeight = flyingObject.getHeight();
+        int thisWidth = getCollisionWidth();
+        int thisHeight = getCollisionHeight();
+        int fWidth = flyingObject.getCollisionWidth();
+        int fHeight = flyingObject.getCollisionHeight();
 
-        return x + (fWidth + this.getWidth()) / 2 > locationX
-                && x - (fWidth + this.getWidth()) / 2 < locationX
-                && y + (fHeight / fFactor + this.getHeight() / factor) / 2 > locationY
-                && y - (fHeight / fFactor + this.getHeight() / factor) / 2 < locationY;
+        return x + (fWidth + thisWidth) / 2 > locationX
+            && x - (fWidth + thisWidth) / 2 < locationX
+            && y + (fHeight / fFactor + thisHeight / factor) / 2 > locationY
+            && y - (fHeight / fFactor + thisHeight / factor) / 2 < locationY;
     }
 
     public int getLocationX() {

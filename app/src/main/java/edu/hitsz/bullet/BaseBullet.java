@@ -10,6 +10,7 @@ import edu.hitsz.basic.AbstractFlyingObject;
  * @author hitsz
  */
 public abstract class BaseBullet extends AbstractFlyingObject {
+    private static final float BULLET_RENDER_SCALE = 0.45f;
 
     private int power = 10;
 
@@ -48,5 +49,10 @@ public abstract class BaseBullet extends AbstractFlyingObject {
 
     public int getPower() {
         return power;
+    }
+
+    @Override
+    public float getRenderScale() {
+        return BULLET_RENDER_SCALE;
     }
 }

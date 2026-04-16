@@ -4,6 +4,7 @@ import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 public abstract class AbstractProp extends AbstractFlyingObject {
+    private static final float PROP_RENDER_SCALE = 0.35f;
 
     /**
      * 道具构造方法
@@ -37,4 +38,9 @@ public abstract class AbstractProp extends AbstractFlyingObject {
      * @param heroAircraft 英雄机对象
      */
     public abstract void effect(HeroAircraft heroAircraft);
+
+    @Override
+    public float getRenderScale() {
+        return PROP_RENDER_SCALE;
+    }
 }

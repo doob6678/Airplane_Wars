@@ -13,6 +13,8 @@ import java.util.List;
  * @author hitsz
  */
 public abstract class AbstractAircraft extends AbstractFlyingObject {
+    private static final float AIRCRAFT_RENDER_SCALE = 0.3f;
+
     /**
      * 最大生命值
      */
@@ -148,6 +150,11 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
                 this.direction,
                 this.shootNum,
                 this.power);
+    }
+
+    @Override
+    public float getRenderScale() {
+        return AIRCRAFT_RENDER_SCALE;
     }
 
 }
