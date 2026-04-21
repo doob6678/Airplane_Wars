@@ -37,48 +37,70 @@ import edu.hitsz.prop.BombProp;
 
 /**
  * 安卓基础游戏视图，负责接收触屏输入并驱动英雄机移动。
+ * 继承自 {@link SurfaceView} 并实现渲染与游戏业务逻辑的核心循环。
+ * 包含游戏基础资源管理（例如敌机、子弹、道具集合等）及公共的视图设置。
  */
 public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
+    /**
+     * 游戏事件监听器接口。
+     * 负责在特定游戏事件（如游戏结束、联机模式结束）发生时向调用方反向通知。
+     */
     public interface GameEventListener {
+        /**
+         * 单机模式游戏结束时回调。
+         *
+         * @param score 玩家最终得分
+         */
         void onGameOver(int score);
+
+        /**
+         * 联机模式游戏结束时回调。
+         * 提供默认实现以兼容非联机模式的使用场景。
+         *
+         * @param score         当前玩家得分
+         * @param opponentScore 对手得分
+         */
+        default void onOnlineGameOver(int score, int opponentScore) {
+            onGameOver(score);
+        }
     }
 
-    private final SurfaceHolder surfaceHolder;
-    private final Paint paint;
+    protected final SurfaceHolder surfaceHolder;
+    protected final Paint paint;
 
-    private Thread drawThread;
-    private volatile boolean isDrawing;
+    protected Thread drawThread;
+    protected volatile boolean isDrawing;
 
-    private int screenWidth;
-    private int screenHeight;
-    private float renderScale = 1f;
-    private float viewportLeft = 0f;
-    private float viewportTop = 0f;
-    private float viewportWidth = Main.WINDOW_WIDTH;
-    private float viewportHeight = Main.WINDOW_HEIGHT;
+    protected int screenWidth;
+    protected int screenHeight;
+    protected float renderScale = 1f;
+    protected float viewportLeft = 0f;
+    protected float viewportTop = 0f;
+    protected float viewportWidth = Main.WINDOW_WIDTH;
+    protected float viewportHeight = Main.WINDOW_HEIGHT;
 
-    private HeroAircraft heroAircraft;
+    protected HeroAircraft heroAircraft;
 
-    private Bitmap backgroundBitmap;
+    protected Bitmap backgroundBitmap;
 
-    private final List<AbstractAircraft> enemyAircraft = new LinkedList<>();
-    private final List<BaseBullet> heroBullets = new LinkedList<>();
-    private final List<BaseBullet> enemyBullets = new LinkedList<>();
-    private final List<AbstractProp> props = new LinkedList<>();
-    private final UnifiedEnemyFactory enemyFactory = new UnifiedEnemyFactory().enableRandom(0.25, 0.0);
+    protected final List<AbstractAircraft> enemyAircraft = new LinkedList<>();
+    protected final List<BaseBullet> heroBullets = new LinkedList<>();
+    protected final List<BaseBullet> enemyBullets = new LinkedList<>();
+    protected final List<AbstractProp> props = new LinkedList<>();
+    protected final UnifiedEnemyFactory enemyFactory = new UnifiedEnemyFactory().enableRandom(0.25, 0.0);
 
-    private int score = 0;
-    private int cycleTime = 0;
-    private int enemyMaxNumber = 5;
-    private int bossScoreThreshold = Integer.MAX_VALUE;
-    private boolean bossExists = false;
-    private double eliteProbability = 0.25;
-    private double elitePlusProbability = 0.0;
-    private GameAudioManager audioManager;
-    private boolean bossBgmActive = false;
-    private boolean gameOverHandled = false;
-    private GameEventListener gameEventListener;
+    protected int score = 0;
+    protected int cycleTime = 0;
+    protected int enemyMaxNumber = 5;
+    protected int bossScoreThreshold = Integer.MAX_VALUE;
+    protected boolean bossExists = false;
+    protected double eliteProbability = 0.25;
+    protected double elitePlusProbability = 0.0;
+    protected GameAudioManager audioManager;
+    protected boolean bossBgmActive = false;
+    protected boolean gameOverHandled = false;
+    protected GameEventListener gameEventListener;
 
     private static final int TIME_INTERVAL = 40;
     private static final int CYCLE_DURATION = 600;
@@ -277,12 +299,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    private void updateGame() {
-        if (heroAircraft == null || heroAircraft.notValid()) {
-            handleGameOverIfNeeded();
-            return;
-        }
-
+    protected void updateGame() {
         cycleTime += TIME_INTERVAL;
         if (cycleTime >= CYCLE_DURATION) {
             cycleTime %= CYCLE_DURATION;
@@ -427,7 +444,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    private void handleGameOverIfNeeded() {
+    protected void handleGameOverIfNeeded() {
         if (gameOverHandled) {
             return;
         }
@@ -483,7 +500,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         props.removeIf(AbstractFlyingObject::notValid);
     }
 
-    private void drawFrame() {
+    protected void drawFrame() {
         Canvas canvas = surfaceHolder.lockCanvas();
         if (canvas == null) {
             return;
@@ -520,7 +537,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    private void drawFlyingObjects(Canvas canvas, List<? extends AbstractFlyingObject> objects) {
+    protected void drawFlyingObjects(Canvas canvas, List<? extends AbstractFlyingObject> objects) {
         for (AbstractFlyingObject object : objects) {
             if (object.notValid()) {
                 continue;
@@ -529,7 +546,7 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
-    private void drawFlyingObject(Canvas canvas, AbstractFlyingObject object, Bitmap bitmap) {
+    protected void drawFlyingObject(Canvas canvas, AbstractFlyingObject object, Bitmap bitmap) {
         if (bitmap == null) {
             return;
         }

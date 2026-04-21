@@ -21,7 +21,9 @@ public class GameActivity extends AppCompatActivity {
     public static final String DIFFICULTY_EASY = "easy";
     public static final String DIFFICULTY_NORMAL = "normal";
     public static final String DIFFICULTY_HARD = "hard";
+    public static final String DIFFICULTY_ONLINE = "online";
     private static final int MSG_GAME_OVER = 1;
+    private static final int MSG_ONLINE_GAME_OVER = 2;
 
     private GameAudioManager audioManager;
     private boolean leaderboardOpened = false;
@@ -51,31 +53,50 @@ public class GameActivity extends AppCompatActivity {
             gameView = new HardGame(this);
         } else if (DIFFICULTY_NORMAL.equalsIgnoreCase(difficulty)) {
             gameView = new NormalGame(this);
+        } else if (DIFFICULTY_ONLINE.equalsIgnoreCase(difficulty)) {
+            gameView = new edu.hitsz.application.OnlineGame(this);
         } else {
             gameView = new EasyGame(this);
         }
-        gameView.setGameEventListener(score -> {
-            Message message = uiHandler.obtainMessage(MSG_GAME_OVER, score, 0);
-            uiHandler.sendMessage(message);
+        gameView.setGameEventListener(new BaseGame.GameEventListener() {
+            @Override
+            public void onGameOver(int score) {
+                Message message = uiHandler.obtainMessage(MSG_GAME_OVER, score, 0);
+                uiHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onOnlineGameOver(int score, int opponentScore) {
+                Message message = uiHandler.obtainMessage(MSG_ONLINE_GAME_OVER, score, opponentScore);
+                uiHandler.sendMessage(message);
+            }
         });
         return gameView;
     }
 
     private boolean handleUiMessage(Message message) {
         if (message.what == MSG_GAME_OVER) {
-            navigateToLeaderboard(message.arg1);
+            navigateToLeaderboard(message.arg1, false, 0);
+            return true;
+        } else if (message.what == MSG_ONLINE_GAME_OVER) {
+            navigateToLeaderboard(message.arg1, true, message.arg2);
             return true;
         }
         return false;
     }
 
-    private void navigateToLeaderboard(int score) {
+    private void navigateToLeaderboard(int score, boolean isOnline, int opponentScore) {
         if (leaderboardOpened || isFinishing() || isDestroyed()) {
             return;
         }
         leaderboardOpened = true;
         Intent intent = new Intent(this, LeaderboardActivity.class);
         intent.putExtra(LeaderboardActivity.EXTRA_SCORE, score);
+        intent.putExtra(LeaderboardActivity.EXTRA_DIFFICULTY, getIntent().getStringExtra(EXTRA_DIFFICULTY));
+        if (isOnline) {
+            intent.putExtra(LeaderboardActivity.EXTRA_IS_ONLINE, true);
+            intent.putExtra(LeaderboardActivity.EXTRA_OPPONENT_SCORE, opponentScore);
+        }
         startActivity(intent);
         finish();
     }

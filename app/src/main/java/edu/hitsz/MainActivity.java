@@ -20,11 +20,14 @@ public class MainActivity extends AppCompatActivity {
         Button easyButton = findViewById(R.id.btn_easy);
         Button normalButton = findViewById(R.id.btn_normal);
         Button hardButton = findViewById(R.id.btn_hard);
+        Button onlineButton = findViewById(R.id.btn_online);
+
         CheckBox musicSwitch = findViewById(R.id.switch_music);
 
         easyButton.setOnClickListener(v -> startGame(GameActivity.DIFFICULTY_EASY, musicSwitch.isChecked()));
         normalButton.setOnClickListener(v -> startGame(GameActivity.DIFFICULTY_NORMAL, musicSwitch.isChecked()));
         hardButton.setOnClickListener(v -> startGame(GameActivity.DIFFICULTY_HARD, musicSwitch.isChecked()));
+        onlineButton.setOnClickListener(v -> startGame(GameActivity.DIFFICULTY_ONLINE, musicSwitch.isChecked()));
     }
 
     private void startGame(String difficulty, boolean musicEnabled) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,9 @@ import edu.hitsz.dao.SQLiteScoreDaoImpl;
 public class LeaderboardActivity extends AppCompatActivity {
 
     public static final String EXTRA_SCORE = "final_score";
+    public static final String EXTRA_IS_ONLINE = "is_online";
+    public static final String EXTRA_OPPONENT_SCORE = "opponent_score";
+    public static final String EXTRA_DIFFICULTY = "difficulty";
 
     private ScoreDao scoreDao;
     private ScoreListAdapter adapter;
@@ -31,9 +35,22 @@ public class LeaderboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_leaderboard);
 
         scoreDao = new SQLiteScoreDaoImpl(getApplicationContext());
+
+        handleOnlineScores();
         initViews();
         maybeInsertCurrentScore();
         refreshList();
+    }
+
+    private void handleOnlineScores() {
+        boolean isOnline = getIntent().getBooleanExtra(EXTRA_IS_ONLINE, false);
+        if (isOnline) {
+            int score = getIntent().getIntExtra(EXTRA_SCORE, 0);
+            int opponentScore = getIntent().getIntExtra(EXTRA_OPPONENT_SCORE, 0);
+            TextView tvOnlineScores = findViewById(R.id.tv_online_scores);
+            tvOnlineScores.setVisibility(android.view.View.VISIBLE);
+            tvOnlineScores.setText("联机结算 - 你的得分: " + score + " | 对手得分: " + opponentScore);
+        }
     }
 
     private void initViews() {
@@ -54,6 +71,11 @@ public class LeaderboardActivity extends AppCompatActivity {
     }
 
     private void maybeInsertCurrentScore() {
+        boolean isOnline = getIntent().getBooleanExtra(EXTRA_IS_ONLINE, false);
+        if (isOnline) {
+            return;
+        }
+
         int score = getIntent().getIntExtra(EXTRA_SCORE, -1);
         if (score < 0) {
             return;

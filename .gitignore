@@ -86,6 +86,14 @@ app/release/
 gradle_fail.log
 compact_log.txt
 
+# ============= SocketServer 文件夹临时文件及配置 =============
+SocketServer/local.properties
+SocketServer/.gradle/
+SocketServer/.idea/
+SocketServer/build/
+SocketServer/app/build/
+SocketServer/SocketServer/build/
+
 # ============= build/gradlew 全部忽略 =============
 **/build/
 build.gradle

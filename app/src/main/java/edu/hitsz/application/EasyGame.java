@@ -52,4 +52,13 @@ public class EasyGame extends BaseGame {
     protected double resolveElitePlusProbability() {
         return 0.05;
     }
+
+    @Override
+    protected void updateGame() {
+        if (heroAircraft == null || heroAircraft.notValid()) {
+            handleGameOverIfNeeded();
+            return;
+        }
+        super.updateGame();
+    }
 }

@@ -54,8 +54,19 @@
         style="@style/Widget.AppCompat.Button"
         android:layout_width="280dp"
         android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
         android:background="@android:drawable/btn_default"
         android:text="困难模式"
+        android:textColor="#111111"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_online"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:background="@android:drawable/btn_default"
+        android:text="联机模式"
         android:textColor="#111111"
         android:textSize="24sp" />
 

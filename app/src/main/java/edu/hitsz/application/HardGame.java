@@ -49,4 +49,13 @@ public class HardGame extends BaseGame {
     protected double resolveElitePlusProbability() {
         return 0.15;
     }
+
+    @Override
+    protected void updateGame() {
+        if (heroAircraft == null || heroAircraft.notValid()) {
+            handleGameOverIfNeeded();
+            return;
+        }
+        super.updateGame();
+    }
 }
