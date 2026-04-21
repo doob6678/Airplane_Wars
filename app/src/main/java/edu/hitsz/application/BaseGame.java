@@ -64,6 +64,17 @@ public class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Run
         default void onOnlineGameOver(int score, int opponentScore) {
             onGameOver(score);
         }
+
+        /**
+         * 联机模式结束时回调，附带对手 userId。
+         *
+         * @param score          当前玩家得分
+         * @param opponentScore  对手得分
+         * @param opponentUserId 对手 userId
+         */
+        default void onOnlineGameOver(int score, int opponentScore, String opponentUserId) {
+            onOnlineGameOver(score, opponentScore);
+        }
     }
 
     protected final SurfaceHolder surfaceHolder;

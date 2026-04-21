@@ -18,6 +18,7 @@ public class GameActivity extends AppCompatActivity {
 
     public static final String EXTRA_DIFFICULTY = "difficulty";
     public static final String EXTRA_MUSIC_ENABLED = "music_enabled";
+    public static final String EXTRA_USER_ID = "user_id";
     public static final String DIFFICULTY_EASY = "easy";
     public static final String DIFFICULTY_NORMAL = "normal";
     public static final String DIFFICULTY_HARD = "hard";
@@ -54,7 +55,11 @@ public class GameActivity extends AppCompatActivity {
         } else if (DIFFICULTY_NORMAL.equalsIgnoreCase(difficulty)) {
             gameView = new NormalGame(this);
         } else if (DIFFICULTY_ONLINE.equalsIgnoreCase(difficulty)) {
-            gameView = new edu.hitsz.application.OnlineGame(this);
+            String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+            if (userId == null || userId.trim().isEmpty()) {
+                userId = "匿名玩家";
+            }
+            gameView = new edu.hitsz.application.OnlineGame(this, userId);
         } else {
             gameView = new EasyGame(this);
         }
@@ -70,6 +75,12 @@ public class GameActivity extends AppCompatActivity {
                 Message message = uiHandler.obtainMessage(MSG_ONLINE_GAME_OVER, score, opponentScore);
                 uiHandler.sendMessage(message);
             }
+
+            @Override
+            public void onOnlineGameOver(int score, int opponentScore, String opponentUserId) {
+                Message message = uiHandler.obtainMessage(MSG_ONLINE_GAME_OVER, score, opponentScore, opponentUserId);
+                uiHandler.sendMessage(message);
+            }
         });
         return gameView;
     }
@@ -79,13 +90,18 @@ public class GameActivity extends AppCompatActivity {
             navigateToLeaderboard(message.arg1, false, 0);
             return true;
         } else if (message.what == MSG_ONLINE_GAME_OVER) {
-            navigateToLeaderboard(message.arg1, true, message.arg2);
+            String opponentUserId = message.obj instanceof String ? (String) message.obj : "Unknown";
+            navigateToLeaderboard(message.arg1, true, message.arg2, opponentUserId);
             return true;
         }
         return false;
     }
 
     private void navigateToLeaderboard(int score, boolean isOnline, int opponentScore) {
+        navigateToLeaderboard(score, isOnline, opponentScore, "Unknown");
+    }
+
+    private void navigateToLeaderboard(int score, boolean isOnline, int opponentScore, String opponentUserId) {
         if (leaderboardOpened || isFinishing() || isDestroyed()) {
             return;
         }
@@ -93,9 +109,11 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LeaderboardActivity.class);
         intent.putExtra(LeaderboardActivity.EXTRA_SCORE, score);
         intent.putExtra(LeaderboardActivity.EXTRA_DIFFICULTY, getIntent().getStringExtra(EXTRA_DIFFICULTY));
+        intent.putExtra(LeaderboardActivity.EXTRA_USER_ID, getIntent().getStringExtra(EXTRA_USER_ID));
         if (isOnline) {
             intent.putExtra(LeaderboardActivity.EXTRA_IS_ONLINE, true);
             intent.putExtra(LeaderboardActivity.EXTRA_OPPONENT_SCORE, opponentScore);
+            intent.putExtra(LeaderboardActivity.EXTRA_OPPONENT_USER_ID, opponentUserId);
         }
         startActivity(intent);
         finish();
