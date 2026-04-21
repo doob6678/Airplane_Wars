@@ -10,3 +10,5 @@
 {"userId":"1003","score":90,"opponentUserId":"1002","opponentScore":220,"time":1776770294314}
 {"userId":"1001","score":0,"opponentUserId":"1002","opponentScore":0,"time":1776770326322}
 {"userId":"1002","score":0,"opponentUserId":"1001","opponentScore":0,"time":1776770326322}
+{"userId":"1002","score":40,"opponentUserId":"1001","opponentScore":0,"time":1776770627260}
+{"userId":"1001","score":0,"opponentUserId":"1002","opponentScore":40,"time":1776770627260}

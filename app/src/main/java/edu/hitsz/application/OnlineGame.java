@@ -30,7 +30,9 @@ public class OnlineGame extends NormalGame {
     private static final int CONNECT_TIMEOUT_MS = 5000;
 
     private final String userId;
+    // 对手 userId 在 MATCH 消息后更新；初始用于 UI“匹配中”提示。
     private volatile String opponentUserId = "匹配中";
+    // 只有 matched=true 才允许游戏推进，确保双方在同一逻辑起点开局。
     private volatile boolean matched = false;
     private int opponentScore = 0;
     private boolean opponentGameOver = false;
@@ -42,6 +44,12 @@ public class OnlineGame extends NormalGame {
     private PrintWriter writer;
     private Thread networkThread;
 
+    /**
+     * 创建联机模式游戏实例并发起服务器连接。
+     *
+     * @param context Android 上下文
+     * @param userId  当前玩家 userId
+     */
     public OnlineGame(Context context, String userId) {
         super(context);
         this.userId = normalizeUserId(userId);
@@ -60,6 +68,7 @@ public class OnlineGame extends NormalGame {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8)), true);
+                // 连接建立后立刻声明身份，进入服务端匹配队列。
                 writer.println("JOIN:" + userId);
 
                 String fromServer;
@@ -68,13 +77,20 @@ public class OnlineGame extends NormalGame {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Network error", e);
+                // 用可视文案反馈网络失败状态，避免玩家误以为卡死。
                 opponentUserId = "连接失败";
             }
         }, "online-network-thread");
         networkThread.start();
     }
 
+    /**
+     * 解析服务端消息并更新本地联机状态。
+     *
+     * @param msg 一行协议消息
+     */
     private void processServerMessage(String msg) {
+        // 约定：收到 MATCH 才算“开始对局”，未匹配时 updateGame 直接 return。
         if (msg.startsWith("MATCH:")) {
             String matchedUser = msg.substring("MATCH:".length()).trim();
             if (!matchedUser.isEmpty()) {
@@ -120,12 +136,14 @@ public class OnlineGame extends NormalGame {
      */
     @Override
     protected void updateGame() {
+        // 等待匹配阶段不推进游戏逻辑，避免“单人先开局”导致双方状态不一致。
         if (!matched) {
             return;
         }
 
         if (score != lastReportedScore && writer != null) {
             lastReportedScore = score;
+            // 分数变化异步上报，避免阻塞主游戏循环帧率。
             new Thread(() -> {
                 if (writer != null) {
                     writer.println("SCORE:" + score);
@@ -136,6 +154,7 @@ public class OnlineGame extends NormalGame {
         if (heroAircraft == null || heroAircraft.notValid()) {
             if (!myGameOver) {
                 myGameOver = true;
+                // 仅首帧发送 GAME_OVER，避免重复刷消息。
                 new Thread(() -> {
                     if (writer != null) {
                         writer.println("GAME_OVER");
@@ -151,7 +170,7 @@ public class OnlineGame extends NormalGame {
 
     @Override
     protected void handleGameOverIfNeeded() {
-        // Suppress early game over in Online mode unless both are dead
+        // 联机结算门槛：双方都结束才触发结算与跳转。
         if (myGameOver && opponentGameOver) {
             if (gameOverHandled) {
                 return;
@@ -169,11 +188,16 @@ public class OnlineGame extends NormalGame {
                 if (writer != null) {
                     writer.println("bye");
                 }
+                // 主动结束后关闭 socket，释放 fd 与网络资源。
                 closeSocket();
             }).start();
         }
     }
 
+    /**
+     * 关闭联机 Socket 连接。
+     * 该方法仅处理关闭动作，不做重连策略。
+     */
     private void closeSocket() {
         if (socket != null && !socket.isClosed()) {
             try {
@@ -184,6 +208,12 @@ public class OnlineGame extends NormalGame {
         }
     }
 
+    /**
+     * 渲染联机模式画面：
+     * - 常规战斗元素；
+     * - 本方/对方分数；
+     * - 匹配状态提示。
+     */
     @Override
     protected void drawFrame() {
         Canvas canvas = surfaceHolder.lockCanvas();
@@ -223,6 +253,7 @@ public class OnlineGame extends NormalGame {
             if (!matched) {
                 paint.setColor(Color.YELLOW);
                 paint.setTextSize(42f);
+                // 明确告知“尚未匹配完成”，避免玩家误判为帧卡顿。
                 canvas.drawText("MATCHING...", viewportLeft + 20, viewportTop + 230, paint);
             }
         } finally {
@@ -230,6 +261,12 @@ public class OnlineGame extends NormalGame {
         }
     }
 
+    /**
+     * 规范化 userId，防止空值、非法字符与超长输入。
+     *
+     * @param raw 原始 userId
+     * @return 安全可传输的 userId
+     */
     private String normalizeUserId(String raw) {
         String value = raw == null ? "" : raw.trim();
         if (value.isEmpty()) {
